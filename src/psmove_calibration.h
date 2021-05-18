@@ -90,6 +90,17 @@ ADDCALL psmove_calibration_map_gyroscope(PSMoveCalibration *calibration,
         int *raw_input, float *gx, float *gy, float *gz);
 
 /**
+ * Copy calibration information to supplied buffer.
+ *
+ * calibration ... a valid PSMoveCalibration * instance.
+ * data ... a pointer to a buffer to copy raw calibration data to
+ * size ... size of calibration data buffer, will hold raw calibration size on return
+ **/
+ADDAPI enum PSMove_Bool_Type
+ADDCALL psmove_calibration_raw_copy(PSMoveCalibration *calibration, 
+        unsigned char *data, size_t *size);
+
+/**
  * Dump calibration information to stdout.
  *
  * This ist mostly used for debugging. Don't rely on this function to

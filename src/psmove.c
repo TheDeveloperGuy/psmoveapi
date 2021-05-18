@@ -2029,6 +2029,17 @@ psmove_dump_calibration(PSMove *move)
     psmove_calibration_dump(move->calibration);
 }
 
+enum PSMove_Bool
+psmove_get_calibration_raw(PSMove *move, unsigned char *data, size_t *size)
+{
+	psmove_return_val_if_fail(move != NULL, PSMove_False);
+
+	if (psmove_has_calibration(move)) {
+		return psmove_calibration_raw_copy(move->calibration, data, size);
+	}
+
+	return PSMove_False;
+}
 
 void
 psmove_get_magnetometer(PSMove *move, int *mx, int *my, int *mz)

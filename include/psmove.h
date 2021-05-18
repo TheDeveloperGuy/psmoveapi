@@ -1162,6 +1162,19 @@ ADDAPI void
 ADDCALL psmove_dump_calibration(PSMove *move);
 
 /**
+ * \brief Copy the raw calibration data to buffer.
+ *
+ * The current raw calibration data (if available) will be copied to \c
+ * supplied buffer.
+ *
+ * \param move A valid \ref PSMove handle
+ * \param data A pointer to a buffer to copy raw calibration data to
+ * \param size Size of calibration data buffer, will hold raw calibration size on return
+**/
+ADDAPI enum PSMove_Bool
+ADDCALL psmove_get_calibration_raw(PSMove *move, unsigned char *data, size_t *size);
+
+/**
  * \brief Enable or disable orientation tracking.
  *
  * This will enable orientation tracking and update the internal orientation

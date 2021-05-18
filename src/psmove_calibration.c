@@ -664,6 +664,28 @@ psmove_calibration_dump(PSMoveCalibration *calibration)
     }
 }
 
+enum PSMove_Bool_Type
+psmove_calibration_raw_copy(PSMoveCalibration *calibration,
+	unsigned char *data, size_t *size)
+{
+	psmove_return_val_if_fail(calibration != NULL, PSMove_False);
+	psmove_return_val_if_fail(data != NULL, PSMove_False);
+	psmove_return_val_if_fail(size != NULL, PSMove_False);
+
+	enum PSMove_Model_Type model = psmove_get_model(calibration->move);
+
+	size_t calibration_blob_size = (model == Model_ZCM1)
+		? PSMOVE_ZCM1_CALIBRATION_BLOB_SIZE
+		: PSMOVE_ZCM2_CALIBRATION_BLOB_SIZE;
+
+	psmove_return_val_if_fail(*size >= calibration_blob_size, PSMove_False);
+
+	memcpy(data, calibration->usb_calibration, calibration_blob_size);
+	*size = calibration_blob_size;
+
+	return PSMove_True;
+}
+
 void
 psmove_calibration_map_accelerometer(PSMoveCalibration *calibration,
         int *raw_input, float *ax, float *ay, float *az)
