@@ -312,6 +312,12 @@ PSMoveAPI::update()
 						psmove_get_half_frame(read_move, Sensor_Gyroscope, Frame_SecondHalf,
 							&data.gyroscope[0], &data.gyroscope[1], &data.gyroscope[2]);
 
+						for (int i = 0; i < 3; i++)
+						{
+							data.accelerometer[i+3] = data.accelerometer[i];
+							data.gyroscope[i+3] = data.gyroscope[i];
+						}
+
 						receiver->sensor_update(&data, user_data);
 					}
 				}
