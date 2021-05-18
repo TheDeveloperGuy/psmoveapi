@@ -246,21 +246,21 @@ PSMoveAPI::update()
                 receiver->connect(&c->controller, user_data);
             }
 
-			if (receiver->calibration != nullptr) {
-				auto read_move = c->read_move();
-				if (read_move != nullptr) {
-					ControllerCalibrationRaw data;
-					memset(&data, 0, sizeof(data));
-					data.index = c->controller.index;
-					data.model = psmove_get_model(read_move);
-					data.size = sizeof(data.data);
+            if (receiver->calibration != nullptr) {
+                auto read_move = c->read_move();
+                if (read_move != nullptr) {
+                    ControllerCalibrationRaw data;
+                    memset(&data, 0, sizeof(data));
+                    data.index = c->controller.index;
+                    data.model = psmove_get_model(read_move);
+                    data.size = sizeof(data.data);
 
-					if (psmove_get_calibration_raw(read_move, data.data, &data.size)) {
-						// Send calibration data event
-						receiver->calibration(&data, user_data);
-					}
-				}
-			}
+                    if (psmove_get_calibration_raw(read_move, data.data, &data.size)) {
+                        // Send calibration data event
+                        receiver->calibration(&data, user_data);
+                    }
+                }
+            }
             c->api_connected = c->connected;
         }
 
@@ -287,40 +287,40 @@ PSMoveAPI::update()
             }
         } else {
             while (psmove_poll(read_move)) {
-				if (receiver->sensor_update != nullptr) {
-					ControllerSensorRaw data;
-					memset(&data, 0, sizeof(data));
-					data.index = c->controller.index;
-					data.model = psmove_get_model(read_move);
+                if (receiver->sensor_update != nullptr) {
+                    ControllerSensorRaw data;
+                    memset(&data, 0, sizeof(data));
+                    data.index = c->controller.index;
+                    data.model = psmove_get_model(read_move);
 
-					if (data.model == Model_ZCM1) {
-						psmove_get_half_frame(read_move, Sensor_Accelerometer, Frame_FirstHalf,
-							&data.accelerometer[0], &data.accelerometer[1], &data.accelerometer[2]);
-						psmove_get_half_frame(read_move, Sensor_Accelerometer, Frame_SecondHalf,
-							&data.accelerometer[3], &data.accelerometer[4], &data.accelerometer[5]);
+                    if (data.model == Model_ZCM1) {
+                        psmove_get_half_frame(read_move, Sensor_Accelerometer, Frame_FirstHalf,
+                            &data.accelerometer[0], &data.accelerometer[1], &data.accelerometer[2]);
+                        psmove_get_half_frame(read_move, Sensor_Accelerometer, Frame_SecondHalf,
+                            &data.accelerometer[3], &data.accelerometer[4], &data.accelerometer[5]);
 
-						psmove_get_half_frame(read_move, Sensor_Gyroscope, Frame_FirstHalf,
-							&data.gyroscope[0], &data.gyroscope[1], &data.gyroscope[2]);
-						psmove_get_half_frame(read_move, Sensor_Gyroscope, Frame_SecondHalf,
-							&data.gyroscope[3], &data.gyroscope[4], &data.gyroscope[5]);
+                        psmove_get_half_frame(read_move, Sensor_Gyroscope, Frame_FirstHalf,
+                            &data.gyroscope[0], &data.gyroscope[1], &data.gyroscope[2]);
+                        psmove_get_half_frame(read_move, Sensor_Gyroscope, Frame_SecondHalf,
+                            &data.gyroscope[3], &data.gyroscope[4], &data.gyroscope[5]);
 
-						receiver->sensor_update(&data, user_data);
-					} else {
-						psmove_get_half_frame(read_move, Sensor_Accelerometer, Frame_SecondHalf,
-							&data.accelerometer[0], &data.accelerometer[1], &data.accelerometer[2]);
+                        receiver->sensor_update(&data, user_data);
+                    } else {
+                        psmove_get_half_frame(read_move, Sensor_Accelerometer, Frame_SecondHalf,
+                            &data.accelerometer[0], &data.accelerometer[1], &data.accelerometer[2]);
 
-						psmove_get_half_frame(read_move, Sensor_Gyroscope, Frame_SecondHalf,
-							&data.gyroscope[0], &data.gyroscope[1], &data.gyroscope[2]);
+                        psmove_get_half_frame(read_move, Sensor_Gyroscope, Frame_SecondHalf,
+                            &data.gyroscope[0], &data.gyroscope[1], &data.gyroscope[2]);
 
-						for (int i = 0; i < 3; i++)
-						{
-							data.accelerometer[i+3] = data.accelerometer[i];
-							data.gyroscope[i+3] = data.gyroscope[i];
-						}
+                        for (int i = 0; i < 3; i++)
+                        {
+                            data.accelerometer[i+3] = data.accelerometer[i];
+                            data.gyroscope[i+3] = data.gyroscope[i];
+                        }
 
-						receiver->sensor_update(&data, user_data);
-					}
-				}
+                        receiver->sensor_update(&data, user_data);
+                    }
+                }
 
                 if (receiver->update != nullptr) {
                     int previous = c->controller.buttons;
