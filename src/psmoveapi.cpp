@@ -114,6 +114,8 @@ ControllerGlue::add_handle(PSMove *handle)
 
         move_bluetooth = handle;
     }
+
+	controller.move = read_move();
 }
 
 void

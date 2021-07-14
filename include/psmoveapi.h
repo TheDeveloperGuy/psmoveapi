@@ -69,6 +69,8 @@ struct Controller {
     // (not related to user_data pointer in EventReceiver)
     void *user_data;
 
+	// Handle to (Bluetooth/read) PS Move Controller
+	PSMove *move;
 };
 
 struct EventReceiver {
