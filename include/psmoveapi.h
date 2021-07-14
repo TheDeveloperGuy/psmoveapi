@@ -68,35 +68,13 @@ struct Controller {
     // User data pointer that can be set and used by the application
     // (not related to user_data pointer in EventReceiver)
     void *user_data;
-};
 
-struct ControllerSensorRaw {
-    int index;
-    enum PSMove_Model_Type model;
-
-    int accelerometer[6];
-    int gyroscope[6];
-    int magnetometer[6];
-};
-
-#ifndef PSMOVE_MAX_CALIBRATION_BLOB_SIZE
-# define PSMOVE_MAX_CALIBRATION_BLOB_SIZE 160 // Max size of calibration data
-#endif // PSMOVE_MAX_CALIBRATION_BLOB_SIZE
-
-struct ControllerCalibrationRaw {
-    int index;
-    enum PSMove_Model_Type model;
-
-    unsigned char data[PSMOVE_MAX_CALIBRATION_BLOB_SIZE];
-    size_t size;
 };
 
 struct EventReceiver {
     void (*connect)(struct Controller *controller, void *user_data);
     void (*update)(struct Controller *controller, void *user_data);
     void (*disconnect)(struct Controller *controller, void *user_data);
-    void (*calibration)(struct ControllerCalibrationRaw *data, void *user_data);
-    void (*sensor_update)(struct ControllerSensorRaw *data, void *user_data);
 };
 
 ADDAPI void
@@ -123,8 +101,6 @@ public:
     virtual void connect(Controller *controller) {}
     virtual void update(Controller *controller) {}
     virtual void disconnect(Controller *controller) {}
-    virtual void calibration(ControllerCalibrationRaw *data) {}
-    virtual void sensor_update(ControllerSensorRaw *data) {}
 };
 
 namespace {
@@ -147,25 +123,11 @@ _handler_disconnect(struct Controller *controller, void *user_data)
     static_cast<Handler *>(user_data)->disconnect(controller);
 }
 
-void
-_handler_calibration(struct ControllerCalibrationRaw *data, void *user_data)
-{
-    static_cast<Handler *>(user_data)->calibration(data);
-}
-
-void
-_handler_sensor_update(struct ControllerSensorRaw *data, void *user_data)
-{
-    static_cast<Handler *>(user_data)->sensor_update(data);
-}
-
 EventReceiver
 _handler_receiver = {
     _handler_connect,
     _handler_update,
     _handler_disconnect,
-    _handler_calibration,
-    _handler_sensor_update,
 };
 
 }; // end anonymous namespace
