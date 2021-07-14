@@ -166,6 +166,14 @@ enum PSNav_Axis {
     NavAxis_Trigger = 2, /*!< might not work on macOS */
 };
 
+/*! Sensor types.
+*
+* Used by psmove_get_half_frame().
+**/
+enum PSMove_Sensor {
+	Sensor_Accelerometer = 0,
+	Sensor_Gyroscope,
+};
 
 /*! Frame of an input report.
  * Each input report sent by the PS Move Controller contains two readings for
@@ -1025,6 +1033,21 @@ ADDCALL psmove_get_accelerometer_frame(PSMove *move, enum PSMove_Frame frame,
 ADDAPI void
 ADDCALL psmove_get_gyroscope_frame(PSMove *move, enum PSMove_Frame frame,
         float *gx, float *gy, float *gz);
+
+/**
+ * Get a half-frame from the accelerometer or gyroscope from the
+ * PS Move after using psmove_poll() previously.
+ *
+ * sensor must be Sensor_Accelerometer or Sensor_Accelerometer.
+ *
+ * frame must be Frame_FirstHalf or Frame_SecondHalf.
+ *
+ * x, y and z can point to integer locations that will be filled
+ * with the readings. If any are NULL, the fields will be ignored.
+ **/
+ADDAPI void
+ADDCALL psmove_get_half_frame(PSMove *move, enum PSMove_Sensor sensor,
+	enum PSMove_Frame frame, int *x, int *y, int *z);
 
 /**
  * \brief Get the raw magnetometer reading from the PS Move.

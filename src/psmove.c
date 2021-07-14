@@ -115,11 +115,6 @@ enum PSMove_Device_Type {
     PSMove_MOVED = 0x02,
 };
 
-enum PSMove_Sensor {
-    Sensor_Accelerometer = 0,
-    Sensor_Gyroscope,
-};
-
 typedef struct {
     unsigned char type; /* message type, must be PSMove_Req_SetLEDs */
     unsigned char _zero; /* must be zero */
@@ -301,25 +296,6 @@ static int psmove_remote_disabled = 0;
 
 /* Number of valid, open PSMove* handles "in the wild" */
 static int psmove_num_open_handles = 0;
-
-
-
-/* Previously public functions, now private: */
-
-/**
- * Get a half-frame from the accelerometer or gyroscope from the
- * PS Move after using psmove_poll() previously.
- *
- * sensor must be Sensor_Accelerometer or Sensor_Accelerometer.
- *
- * frame must be Frame_FirstHalf or Frame_SecondHalf.
- *
- * x, y and z can point to integer locations that will be filled
- * with the readings. If any are NULL, the fields will be ignored.
- **/
-void
-psmove_get_half_frame(PSMove *move, enum PSMove_Sensor sensor,
-        enum PSMove_Frame frame, int *x, int *y, int *z);
 
 
 /* Start implementation of the API */
